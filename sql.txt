@@ -1,0 +1,55 @@
+SELECT ① FROM ② WHERE ③
+①取得したいカラム名
+②テーブル名
+③条件
+
+例１）　id,feed,user_id,createdカラムを対象に全件取得
+SELECT `id`,`feed`,`user_id`,`created` FROM `feeds`WHERE 1
+
+
+例２）　全カラムを対象にuser_idが13のレコードのみを取得
+SELECT * FROM `feeds` WHERE `user_id`=13
+
+【テーブル結合　LEFT JOIN文】
+主役テーブルを左に、参照テーブルを右に置く　JOIN句
+構文：　SELECT ① FROM ② LEFT JOIN ③ ON ④ WHERE ⑤
+①取得したいカラム名
+②主役テーブル
+③参照テーブル
+④結合条件
+⑤条件
+※テーブルが複数出てくるため、カラム名の指定には
+`feeds`,`id`のようにテーブル名からはじめ、ドットでつなぎカラム名を指定します。
+
+SELECT * FROM `feeds` LEFT JOIN `users` ON `feeds`.`user_id`=`users`.`id` WHERE 1
+
+→④結合条件テンプレート
+`主役テーブル`.`外部キー`.`参照テーブル`.`主キー`
+
+テーブルになるキーについて
+主キー：テーブル内で一意である情報（情報が被らない）
+外部キー：参照先の主キーと一致する情報
+
+例３）　ONの後の結合条件のみ
+主役テーブル　members
+主キー：id
+外部キー：tweet_id
+
+
+参照テーブル　tweets
+主キー：　id
+
+SELECT ~ ON `members`.`tweet_id`=`tweet`.`id`
+
+【カラムの制限】
+SELECT `feeds`.*,`users`.`name`,`users`.`img_name` FROM `feeds` LEFT JOIN `users` ON `feeds`.`user_id`=`users`.`id` WHERE 1
+
+【テーブル名のエイリアス　AS句】
+使い方：　`テーブル名　AS `別名`
+SELECT `f`.*,`u`.`name`,`u`.`img_name` FROM `feed` AS `f` LEFT JOIN `users` AS `u` ON `feeds`.`user_id`=`users`.`id` WHERE 1
+
+【バッククオートは省略可能】
+SELECT f.*,u.name,u.img_name FROM feed AS f LEFT JOIN users AS u ON feeds.user_id=users.id WHERE 1
+
+
+
