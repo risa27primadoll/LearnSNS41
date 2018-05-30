@@ -42,6 +42,22 @@
         }
     }
 
+    $page = '';
+    $page_row_number = 5;
+    if (isset($_GET['page'])) {
+      $page = $_GET['page'];
+  
+
+    }else{
+
+   $page = 1;
+
+  
+   }
+
+   $start = ($page -1)*$page_row_number;
+  
+
     //検索ボタンが押されたら、あいまい検索
     //検索ボタンが押された=GET送信されたsearch_wordというキーのデータが有る
     if (isset($_GET['search_word']) == true){
@@ -51,7 +67,7 @@
     }else{
       // 通常（検索ボタンを押していない）は全件取得
       // LEFT JOINで全件取得
-      $sql = 'SELECT `f`.*,`u`.`name`,`u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id`=`u`.`id` WHERE 1 ORDER BY `f`.`created` DESC';
+      $sql = "SELECT `f`.*,`u`.`name`,`u`.`img_name` FROM `feeds` AS `f` LEFT JOIN `users` AS `u` ON `f`.`user_id`=`u`.`id` WHERE 1 ORDER BY `f`.`created` DESC LIMIT $start,$page_row_number";
     }
 
     
@@ -92,7 +108,6 @@
         // ["like_cnt"]=>6 <-こんなふうに1データの中にLike数も入ってると表示できそう
         // ["like_flag"]=>0 0:まだいいねしてない 1:既にいいねしてる
   // }
-
         if ($record == false) {
             break;
         }
@@ -132,17 +147,17 @@
 
 
 //いいね済みのみのリンクが押されたときは、配列にすでにいいね！いているものだけを代入する。
-　　　if (isset($_GET["feed_select"]) && ($_GET["feed_select"] == "likes") && ($record["like_flag"] == 1)) {
-      $feeds[] = $record;
-   }
-
-       if (!isset($_GET["feed_select"])) {
-       $feeds[] = $record;  
+       if (isset($_GET["feed_select"]) && ($_GET["feed_select"] == "likes") && ($record["like_flag"] == 1)) {
+         $feeds[] = $record;
        }
 
-       if (isset($_GET["feed_select"]) && ($_GET["feed_select"] == "news") ) {
-        $feeds[] = $record; 
-    }
+       if (!isset($_GET["feed_select"])) {
+          $feeds[] = $record;  
+       }
+
+       if (isset($_GET["feed_select"]) && ($_GET["feed_select"] == "news")) {
+          $feeds[] = $record; 
+       }
 
     $c = count($feeds);
 
@@ -155,10 +170,10 @@
     //     // $feed = $feeds[$i];
     //     echo $feed['feed'];
     //     echo '<br>';
-    // }
+    // }+
 
     // exit();
-
+  }
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -195,7 +210,7 @@
       <div class="collapse navbar-collapse" id="navbar-collapse1">
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">タイムライン</a></li>
-          <li><a href="#">ユーザー一覧</a></li>
+          <li><a href="user_index.php">ユーザー一覧</a></li>
         </ul>
         <form method="GET" action="" class="navbar-form navbar-left" role="search">
           <div class="form-group">
@@ -220,7 +235,7 @@
     <div class="row">
       <div class="col-xs-3">
         <ul class="nav nav-pills nav-stacked">
-          <?php if isset($_GET["feed_select"]) && ($_GET["feed_select"]=="likes")){ ?>
+          <?php if (isset($_GET["feed_select"]) && ($_GET["feed_select"]=="likes")){ ?>
            <li></li><a href="timeline.php?feed_select=news">新着順</a></li>
            <li><a class="active">
           <li><a href="timeline.php?feed_select=likes">いいね！済み</a></li>
@@ -228,7 +243,7 @@
           <li><a class="active">
             <li></li><a href="timeline.php?feed_select=news">新着順</a></li>
             <li><a href="timeline.php?feed_select=likes">いいね！済み</a></li>
-
+          <?php } ?>
           <!-- <li><a href="timeline.php?feed_select=follows">フォロー</a></li> -->
         </ul>
       </div>
@@ -295,8 +310,13 @@
 
         <div aria-label="Page navigation">
           <ul class="pager">
-            <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
-            <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+
+            <?php if ($page == 1) { ?>
+            <li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Newer</a></li>
+            <?php }else{ ?>
+            <li class="previous"><a href="timeline.php?page=<?php echo $page-1; ?>"><span aria-hidden="true">&larr;</span> Newyer</a></li>
+            <?php } ?>
+            <li class="next"><a href="timeline.php?page=<?php echo $page+1; ?>" ">Older <span aria-hidden="true">&rarr;</span></a></li>
           </ul>
         </div>
       </div>

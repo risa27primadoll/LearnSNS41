@@ -1,31 +1,37 @@
 <?php
-//DB接続
-session_start();
-    // require(dbconnect)
-require("dbconnect.php");
+  // DB接続
+  require('dbconnect.php');
+  //ユーザーの一覧を表示するため取得する
+  //SQL文作成
+  $sql = 'SELECT * FROM `users`';
+  //SQL実行
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+  // 繰り返し文の中でフェッチ（配列に保存）
+  while (true) {
+    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($record == false){
+      break;
+    }
+    // like数を取得するSQL文を作成
+     $feed_sql = "SELECT COUNT(*) AS `feed_cnt` FROM `feeds` WHERE `user_id` = ?";
 
-//ユーザーの一覧を表示するために取得する
+     //今回は＄record["id"]はusers.idです。
+     $feed_data = array($record["id"]);
 
-//SQL文作成
-$sql = 'SELECT * FROM `users`';
-//SQL実行
-//$data = array($user["id"]);
-// SQL文を実行
-$stmt = $dbh->prepare($sql);
-$stmt->execute();
+        // SQL文を実行
+     $feed_stmt = $dbh->prepare($feed_sql);
+     $feed_stmt->execute($feed_data);
 
-//繰り返し文の中でフェッチ（配列に保存）
- while (true) {
-        $record = $stmt->fetch(PDO::FETCH_ASSOC); 
-        if ($record== false) {
-            break;
-        }
-        $users[] = $record;     
-     }
+        // like数を取得
+     $feed = $feed_stmt->fetch(PDO::FETCH_ASSOC); 
+        // $like = array("like_cnt"=>5); 
 
+     $record["feed_cnt"] = $feed["feed_cnt"];
 
-// ↓データ保存した配列を表示で使用する。
-
+     $users[] = $record;
+  }
+  //  ↓データ保存した配列を表示で使用する
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -51,7 +57,7 @@ $stmt->execute();
       <div class="collapse navbar-collapse" id="navbar-collapse1">
         <ul class="nav navbar-nav">
           <li><a href="timeline.php">タイムライン</a></li>
-          <li class="active"><a href="#">ユーザー一覧</a></li>
+          <li class="active"><a href="user_index.php">ユーザー一覧</a></li>
         </ul>
         <form method="GET" action="" class="navbar-form navbar-left" role="search">
           <div class="form-group">
@@ -73,31 +79,33 @@ $stmt->execute();
   </nav>
 
   <div class="container">
-    <?php foreach ($users as $user) { ?>
+  <?php foreach ($users as $user) { ?>
+  
     <div class="row">
       <div class="col-xs-12">
 
           <div class="thumbnail">
             <div class="row">
               <div class="col-xs-1">
-                <img src="http://placehold.jp/80x80.png" width="80">
+                <img src="user_profile_img/<?php echo $user["img_name"]; ?>" width="80">
               </div>
               <div class="col-xs-11">
-                名前 <?php echo $users["name"]; ?><br>
-                <a href="#" style="color: #7F7F7F;"><?php echo $users["created"]; ?>2018-05-29 10:00:00からメンバー</a>
+                名前 <?php echo $user["name"]; ?><br>
+                <a href="#" style="color: #7F7F7F;"><?php echo $user["created"]; ?>からメンバー</a>
               </div>
             </div>
             
             <div class="row feed_sub">
               <div class="col-xs-12">
-                <span class="comment_count">つぶやき数 : 5</span>
+                <span class="comment_count">つぶやき数 : <?php echo $user["feed_cnt"]; ?></span>
               </div>
             </div>
           </div><!-- thumbnail -->
       </div><!-- class="col-xs-12" -->
-    </div>
-    <?php } ?>
-    <!-- class="row" -->
+    </div><!-- class="row" -->
+  <?php } ?>
+
+
   </div><!-- class="cotainer" -->
 </body>
 </html>
