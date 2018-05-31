@@ -55,6 +55,38 @@
   
    }
 
+  //  if ($page < 0) {
+  //   $page = 1;
+  // }
+
+   // max: カンマ区切りで羅列された数字の中から最大の数を返す
+    $page = max($page,1);
+
+
+//データの件数から、最大ページ数を計算する
+   $sql_count = "SELECT COUNT(*) AS `cnt` FROM `feeds`";
+
+   //SQL実行
+   $stmt_count = $dbh->prepare($sql_count);
+   $stmt_count->execute();
+
+   $record_cnt = $stmt_count->fetch(PDO::FETCH_ASSOC);
+
+    //ページ数計算
+   //Ceil 小数点の切り上げができる関数　２.１　ー＞　３に変換できる
+   $all_page_number = ceil($record_cnt['cnt'] / $page_row_number);
+
+    //不正に大きい数字を指定された場合、最大ページ番号に変換
+   //これと同じことができる関数
+
+   //if ($page > $all_page_number) {
+    //  $page = $all_page_number;
+    // }
+
+   // min: カンマ区切りの数字の中から最小の数値を取得する関数
+   $page = min($page,$all_page_number);
+   //ページ数計算
+
    $start = ($page -1)*$page_row_number;
   
 
@@ -316,7 +348,11 @@
             <?php }else{ ?>
             <li class="previous"><a href="timeline.php?page=<?php echo $page-1; ?>"><span aria-hidden="true">&larr;</span> Newyer</a></li>
             <?php } ?>
-            <li class="next"><a href="timeline.php?page=<?php echo $page+1; ?>" ">Older <span aria-hidden="true">&rarr;</span></a></li>
+
+            <?php if ($page == $all_page_number) { ?>
+            <?php }else{ ?>
+            <li class="next disabled"><a href="timeline.php?page=<?php echo $page+1; ?>" ">Older <span aria-hidden="true">&rarr;</span></a></li>
+            <?php } ?>
           </ul>
         </div>
       </div>

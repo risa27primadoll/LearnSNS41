@@ -11,3 +11,41 @@
 ページネーションできる
 
 SELECT COUNT(*) as `likeflag` FROM `likes` WHERE `user_id`=53 AND `feed_id` =54
+
+
+
+ページネーション
+
+SELECT * FROM `feeds` ORDER BY `created` DESC
+
+$pageに今表示するページ番号が代入されている。
+$page = 1;  //1ページ目
+$page = 2;  //2ページ目
+$page = 3;  //3ページ目
+
+$start = ($page -1)*5;
+
+
+//最初の5件を取得
+SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 0,5
+
+//LIMIT句の使い方
+LIMIT 取得を開始したい場所（０から始まる),取得したい件数
+
+//次の5件を取得
+SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT ５,5
+
+//次の5件を取得
+SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 10,5
+
+
+５月30日にやったこと
+・ページによって表示するデータを変えるために取得するSQLを変える（LIMIT句を使う）
+・Newer,Older ボタンのリンク
+
+今後の予定
+・Older,Newerのボタンを、押してほしくない時にはDisabledを追加するという条件を追加
+・不正なページ番号を指定された場合の対応
+　http://localhost/LearnSNS/timeline.php?page=2        //正常
+　http://localhost/LearnSNS/timeline.php?page=-1       //不正
+　http://localhost/LearnSNS/timeline.php?page=100     //不正（100ページも存在しないとき）
