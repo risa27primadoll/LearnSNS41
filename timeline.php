@@ -326,7 +326,7 @@
                 <span class="like_count">いいね数 : <?php echo $feed["like_cnt"]; ?></span>
                 <?php } ?>
 
-                <span class="comment_count">コメント数 : 9</span>
+                <a href="#collapseComment<?php echo $feed["id"] ?>"data-toggle="collapse" aria-expanded="false"><span class="comment_count">コメント数</span></a>
                   <?php if ($feed["user_id"] == $_SESSION["id"] ){ ?>
               
                   <a href="edit.php?feed_id=<?php echo $feed["id"] ?>" class="btn btn-success btn-xs">編集</a>
@@ -334,7 +334,10 @@
                   
                   <?php } ?>
 
-              </div>
+               </div>
+              <!-- <div class="collapse" id="collapseComment">
+                表示の確認！！！ -->
+                <?php include("comment_view.php"); ?>
             </div>
           </div>
         <?php } ?>

@@ -49,3 +49,19 @@ SELECT * FROM `feeds` ORDER BY `created` DESC LIMIT 10,5
 　http://localhost/LearnSNS/timeline.php?page=2        //正常
 　http://localhost/LearnSNS/timeline.php?page=-1       //不正
 　http://localhost/LearnSNS/timeline.php?page=100     //不正（100ページも存在しないとき）
+
+ファイル読み込み
+require
+動作
+エラーが出た時に処理を中断し、読み込み側のその後の処理を行わない
+
+
+利用をする時
+DBに接続など、エラーが起きたら致命的な処理の場合使用（その後の処理を行ってもあまり意味がない）
+
+include
+動作
+エラー起きた時に、処理を継続し、読み込み側ん０その後の処理も継続する。
+
+利用する時
+HTMLなどに表示を行う時に使用（多少のエラーが有っても全体的に処理を行った方がユーザーに対してメリットが有る。
