@@ -21,6 +21,15 @@ $sql = 'INSERT INTO `comments`(`comment`, `user_id`, `feed_id`, `created`) VALUE
   $stmt->execute($data);
 
 
+//feedsデーブルにcommentのカウントをupdateする
+//SQL文作成
+  $update_sql = "UPDATE `feeds` SET `comment_count` = `comment_count`+1 WHERE `id`=?";
+
+  //SQL文実行
+  $update_data = array($feed_id);
+  $update_stmt = $dbh->prepare($update_sql);
+  $update_stmt->execute($update_data);
+
 // timeline.php(一覧)に戻る
 header('Location: timeline.php');
 ?>
