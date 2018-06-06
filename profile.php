@@ -56,6 +56,9 @@ $follower_sql = "SELECT `fw`.*, `u`.`created`,`u`.`name`,`u`.`img_name` FROM `fo
    
    $follower = array();
 
+   $follow_flag = 0;
+
+    //ログインユーザーが今見ていいるプロフィルページをフォローしたら１、フォローしていなかったら０
    while (true) {
 
     $follower_record = $follower_stmt->fetch(PDO::FETCH_ASSOC);
@@ -65,9 +68,17 @@ $follower_sql = "SELECT `fw`.*, `u`.`created`,`u`.`name`,`u`.`img_name` FROM `fo
 
       }
 
- $follower[] = $follower_record;
 
-}
+  //followerの中に。ログインしている人がいるかをチェック
+  if ($follower_record["user_id"] == $_SESSION["id"]) {
+  $follow_flag = 1;
+
+  }
+
+
+  $follower[] = $follower_record;
+
+ }
 
  ?>
 
@@ -122,7 +133,16 @@ $follower_sql = "SELECT `fw`.*, `u`.`created`,`u`.`name`,`u`.`img_name` FROM `fo
         <!-- <img src="http://placehold.jp/200x200.png" class="img-thumbnail" /> -->
         <img src="user_profile_img/<?php echo $signin_user['img_name']; ?>"  class="img-thumbnail">
         <h2><?php echo $signin_user['name']; ?></h2>
-        <button class="btn btn-default btn-block">フォローする</button>
+
+        <?php if ($user_id != $_SESSION["id"]) { ?>
+
+        <?php if ($follow_flag == 0) { ?>
+        <a href="follow.php?follower_id=<?php echo $signin_user["id"]; ?>"><button class="btn btn-default btn-block">フォローする</button></a>
+
+        <?php }else{ ?>
+        <a href="#"><button class="btn btn-default btn-block">フォローを解除する</button></a>
+        <?php } ?>
+        <?php } ?>
       </div>
 
       <div class="col-xs-9">

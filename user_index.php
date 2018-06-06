@@ -97,7 +97,7 @@
             
             <div class="row feed_sub">
               <div class="col-xs-12">
-                <span class="comment_count">つぶやき数 : <?php echo $user["feed"]; ?>か</span>
+                <span class="comment_count">つぶやき数 : <?php echo $user["feed"]; ?></span>
               </div>
             </div>
           </div><!-- thumbnail -->
