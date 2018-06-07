@@ -140,7 +140,8 @@ $follower_sql = "SELECT `fw`.*, `u`.`created`,`u`.`name`,`u`.`img_name` FROM `fo
         <a href="follow.php?follower_id=<?php echo $signin_user["id"]; ?>"><button class="btn btn-default btn-block">フォローする</button></a>
 
         <?php }else{ ?>
-        <a href="#"><button class="btn btn-default btn-block">フォローを解除する</button></a>
+        <a href="unfollow.php?follower_id=<?php echo $profile_user["id"]; ?>">
+        <button class="btn btn-default btn-block">フォローを解除する</button></a>
         <?php } ?>
         <?php } ?>
       </div>

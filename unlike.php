@@ -6,9 +6,9 @@ require("dbconnect.php");
 // feed_idを取得
 $feed_id = $_GET["feed_id"];
 //SQL文作成（DELETE文）
-$sql = "DELETE FROM `likes` WHERE `user_id`=?, `feed_id`=?;";
+$sql = "DELETE FROM `likes` WHERE `user_id`=?, ;";
 // SQL実行
-$data = array($_SESSION['id'], $feed_id);
+$data = array($_SESSION['id']);
 $stmt = $dbh->prepare($sql);
 $stmt->execute($data);
 
